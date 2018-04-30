@@ -20,9 +20,16 @@ import Footer from '../components/Footer'
 
 import * as Images from '../assets/images'
 
+import { Auth } from 'aws-amplify'
+
 class Home extends React.Component {
   state = {
     greeting: 'SIGN UP'
+  }
+  componentDidMount() {
+    Auth.currentAuthenticatedUser()
+      .then(success => this.props.navigation.navigate('HomeNav'))
+      .catch(err => console.log('not signed in...', err))
   }
   signUp = () => {
     this.props.navigation.navigate('Apply')
