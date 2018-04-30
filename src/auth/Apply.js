@@ -15,6 +15,8 @@ import Button from '../components/Button'
 import * as Images from '../assets/images'
 import { dimensions, fonts, colors } from '../theme'
 
+import { Auth } from 'aws-amplify'
+
 class Apply extends React.Component {
   state = {
     email: '',
@@ -28,12 +30,38 @@ class Apply extends React.Component {
     this.setState({ [key]: value })
   }
   signUp = () => {
-    this.setState({ showConfirmation: true })
+    const {
+      email,
+      username,
+      phone_number,
+      password
+    } = this.state
+  
+    Auth.signUp({
+      username,
+      password,
+      attributes: {
+        email,
+        phone
+      }
+    })
+    .then(success => {
+      console.log('successful sign up: ', success)
+      this.setState({ showConfirmation: true })
+    })
+    .catch(err => console.log('error signing up: ', err))
   }
+  
   confirmSignUp = () => {
-    this.setState({ showConfirmation: false })
-    this.props.navigation.navigate('SignIn')
+    const { username, confirmationCode } = this.state
+    Auth.confirmSignUp(username, confirmationCode)
+      .then(success => {
+        console.log('successfully confirmed sign up!: ', success)
+        this.props.navigation.navigate('SignIn')
+      })
+      .catch(err => console.log('error confirming sign up!: ', err))
   }
+
   render() {
     const open = () => this.props.navigation.navigate('DrawerOpen')
     return (
