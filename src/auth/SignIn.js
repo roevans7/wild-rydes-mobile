@@ -26,11 +26,27 @@ class SignIn extends React.Component {
     this.setState({ [key]: value })
   }
   signIn = () => {
-    this.setState({ showConfirmation: true })
+    const { username, password } = this.state
+    Auth.signIn(username, password)
+      .then(success => {
+        console.log('successful sign in!: ', success)
+        this.setState({ showConfirmation: true })
+      })
+      .catch(err => {
+        console.log('error signing in...: ', err)
+      })
   }
   confirmsignIn = () => {
-    this.setState({ showConfirmation: false })
-    this.props.navigation.navigate('HomeNav')
+    const { username, confirmationCode } = this.state
+    Auth.confirmSignIn(username, confirmationCode)
+      .then(success => {
+        console.log('success confirming sign in!: ', success)
+        this.props.navigation.navigate('HomeNav')
+      })
+      .catch(err => {
+        console.log('error confirming sign in...: ', err)
+        this.setState({ showConfirmation: false })
+      })
   }
   render() {
     const open = () => this.props.navigation.navigate('DrawerOpen')
