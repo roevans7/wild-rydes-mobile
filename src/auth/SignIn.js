@@ -14,13 +14,15 @@ import NavButton from '../components/NavButton'
 import Button from '../components/Button'
 import * as Images from '../assets/images'
 import { dimensions, fonts, colors } from '../theme'
+import { Auth } from 'aws-amplify'
 
 class SignIn extends React.Component {
   state = {
     username: '',
     password: '',
     confirmationCode: '',
-    showConfirmation: false
+    showConfirmation: false,
+    user: {}
   }
   onChangeText = (key, value) => {
     this.setState({ [key]: value })
@@ -28,17 +30,17 @@ class SignIn extends React.Component {
   signIn = () => {
     const { username, password } = this.state
     Auth.signIn(username, password)
-      .then(success => {
-        console.log('successful sign in!: ', success)
-        this.setState({ showConfirmation: true })
+      .then(user => {
+        console.log('successful sign in!: ', user)
+        this.setState({ showConfirmation: true, user })
       })
       .catch(err => {
         console.log('error signing in...: ', err)
       })
   }
   confirmsignIn = () => {
-    const { username, confirmationCode } = this.state
-    Auth.confirmSignIn(username, confirmationCode)
+    const { user, confirmationCode } = this.state
+    Auth.confirmSignIn(user, confirmationCode)
       .then(success => {
         console.log('success confirming sign in!: ', success)
         this.props.navigation.navigate('HomeNav')
