@@ -42,7 +42,7 @@ class Apply extends React.Component {
       password,
       attributes: {
         email,
-        phone
+        phone_number
       }
     })
     .then(success => {
