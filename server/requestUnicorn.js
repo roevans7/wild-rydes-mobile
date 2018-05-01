@@ -21,7 +21,7 @@ const randomBytes = require('crypto').randomBytes;
 // Configure the appropriate region for the app
 const region = process.env.MOBILE_HUB_PROJECT_REGION || process.env.REGION || 'us-east-1';
 AWS.config.update({ region: region })
-let databaseTableName = 'Rides';
+let databaseTableName = 'testwildrydes-mobilehub-195022708-Rides'
 if (process.env.MOBILE_HUB_DYNAMIC_PREFIX) {
     databaseTableName = process.env.MOBILE_HUB_DYNAMIC_PREFIX + '-Rides';
 }
