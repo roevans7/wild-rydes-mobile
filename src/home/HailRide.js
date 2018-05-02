@@ -61,6 +61,7 @@ class HailRide extends React.Component {
       });
       const data = await this.getData(this.state.pin);
       console.log('data from API: ', data);
+      Analytics.record('Unicorn requested', { unicornName: data.Unicorn.Name })
       updates.push(`Your unicorn, ${data.Unicorn.Name} will be with you in ${data.Eta} seconds`);
       this.setState({ updates });
 
