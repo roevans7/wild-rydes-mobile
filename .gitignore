@@ -9,6 +9,15 @@ ios/build
 # testing
 /coverage
 
+#android
+android/.gradle/
+android/.idea/
+android/WildRidesReactNative.iml
+android/app/app.iml
+android/app/build/
+android/build/
+android/local.properties
+
 # production
 /build
 

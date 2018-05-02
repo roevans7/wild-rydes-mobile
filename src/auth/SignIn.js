@@ -76,6 +76,7 @@ class SignIn extends React.Component {
                   selectionColor='white'
                   autoCapitalize='none'
                   autoCorrect={false}
+                  underlineColorAndroid='transparent'
                 />
                 <TextInput
                   placeholderTextColor='rgba(255, 255, 255, .6)'
@@ -84,6 +85,7 @@ class SignIn extends React.Component {
                   onChangeText={val => this.onChangeText('password', val)}
                   selectionColor='white'
                   secureTextEntry={true}
+                  underlineColorAndroid='transparent'
                 />
                 <Button
                   onPress={this.signIn}
@@ -102,6 +104,7 @@ class SignIn extends React.Component {
                   placeholder='Confirmation Code'
                   onChangeText={val => this.onChangeText('confirmationCode', val)}
                   selectionColor='white'
+                  underlineColorAndroid='transparent'
                 />
                 <Button
                   onPress={this.confirmsignIn}

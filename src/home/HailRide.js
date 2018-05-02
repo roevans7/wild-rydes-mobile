@@ -119,7 +119,7 @@ class HailRide extends React.Component {
 
               {
                 this.state.updates.map((update, index) => (
-                  <Text style={styles.update}>{update}</Text>
+                  <Text key={index} style={styles.update}>{update}</Text>
                 ))
               }
             </View>
