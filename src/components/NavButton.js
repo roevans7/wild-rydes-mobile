@@ -5,13 +5,13 @@ import {
   StyleSheet
 } from 'react-native'
 
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import { Ionicons } from '@expo/vector-icons';
 
 export default ({ onPress, color = 'white' }) => (
   <View style={styles.container}>
     <TouchableOpacity onPress={onPress}>
       <View style={styles.navButton}>
-      <Icon name="menu" size={30} color={color} />
+      <Ionicons name="ios-menu" size={30} color={color} />
       </View>
     </TouchableOpacity>
   </View>

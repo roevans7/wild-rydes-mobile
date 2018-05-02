@@ -12,6 +12,8 @@ import {
   View
 } from 'react-native';
 
+import { Font } from 'expo';
+
 import { SwitchNavigator } from 'react-navigation'
 
 import AuthNav from './src/auth'
@@ -28,7 +30,19 @@ const Nav = SwitchNavigator(
 )
 
 export default class App extends Component {
+  state = {
+    loading: true
+  }
+  async componentDidMount() {
+    await Font.loadAsync({
+      'regular-font': require('./src/assets/fonts/NotoSerif-Regular.ttf'),
+      'bold-font': require('./src/assets/fonts/NotoSerif-Bold.ttf'),
+      'italic-font': require('./src/assets/fonts/NotoSerif-Italic.ttf'),
+    })
+    this.setState({ loading: false });
+  }
   render() {
+    if (this.state.loading) return <View />
     return (
       <Nav />
     );

@@ -11,9 +11,9 @@ const colors = {
 }
 
 const fonts = {
-  regular: 'NotoSerif',
-  bold: 'NotoSerif-Bold',
-  italic: 'NotoSerif-Italic'
+  regular: 'regular-font',
+  bold: 'regular-font',
+  italic: 'italic-font'
 }
 
 export {

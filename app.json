@@ -1,4 +1,5 @@
 {
-  "name": "WildRidesReactNative",
-  "displayName": "WildRidesReactNative"
+  "expo": {
+    "sdkVersion": "27.0.0"
+  }
 }
