@@ -3,11 +3,11 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native'
 
 import { colors, fonts } from '../theme'
-
 import { Auth, API } from 'aws-amplify'
 
 const apiName = 'requestUnicorn';
@@ -15,11 +15,33 @@ const apiPath = '/ride';
 
 class HailRide extends React.Component {
   state = {
+    loading: true,
     pin: {
-      latitude: 40.745896,
-      longitude: -73.988791
+      latitude: '',
+      longitude: ''
     },
-    updates: []
+    updates: [],
+    unicornFetched: false,
+    requestRideEnabled: true
+  }
+  componentDidMount() {
+    this.getLocation()
+    setInterval(() => this.getLocation, 1000 * 60 * 15)
+  }
+  getLocation() {
+    navigator.geolocation.getCurrentPosition((res) => {
+      const { latitude, longitude } = res.coords
+      console.log('updating state...')
+      this.setState({
+        pin: {
+          latitude,
+          longitude,
+        },
+        loading: false })
+      }, err => {
+      console.log('error getting position...')
+      this.setState({ loading: false })
+    })
   }
   signOut() {
     Auth.signOut()
@@ -31,7 +53,7 @@ class HailRide extends React.Component {
       return true;
     }
 
-    const updates = [ 'Requesting Unicorn' ];
+    const updates = ['Requesting Unicorn...']
     try {
       this.setState({
         requestRideEnabled: false,
@@ -39,7 +61,7 @@ class HailRide extends React.Component {
       });
       const data = await this.getData(this.state.pin);
       console.log('data from API: ', data);
-      updates.push([ `Your unicorn, ${data.Unicorn.Name} will be with you in ${data.Eta} seconds` ]);
+      updates.push(`Your unicorn, ${data.Unicorn.Name} will be with you in ${data.Eta} seconds`);
       this.setState({ updates });
 
       // Let's fake the arrival
@@ -49,8 +71,7 @@ class HailRide extends React.Component {
         updateList.push([ `${data.Unicorn.Name} has arrived` ]);
         this.setState({
           updates: updateList,
-          requestRideEnabled: false,
-          pin: null
+          requestRideEnabled: true,
         });
       }, data.Eta * 1000);
     } catch (err) {
@@ -70,24 +91,74 @@ class HailRide extends React.Component {
     return await API.post(apiName, apiPath, { body });
   }
   render() {
+    console.log('updates: ', this.state.updates)
     return (
       <View>
         <View style={styles.header}>
           <Text style={styles.title}>HAIL RIDE</Text>
           <Text onPress={this.signOut.bind(this)} style={styles.signout}>Sign Out</Text>
         </View>
+        {
+          this.state.loading && <ActivityIndicator />
+        }
+        {
+          !this.state.loading && (
+            <View>
+              <Text style={styles.locationTitle}>Your Current Location:</Text>
+              <Text style={styles.latitude}>Latitude: {this.state.pin.latitude}</Text>
+              <Text style={styles.longitude}>Longitude: {this.state.pin.longitude}</Text>
+              {
+                this.state.requestRideEnabled && (
+                  <TouchableOpacity onPress={this.onPress.bind(this)}>
+                    <View style={styles.button}>
+                      <Text>Request Ride</Text>
+                    </View>
+                  </TouchableOpacity>
+                )
+              }
 
-        <TouchableOpacity onPress={this.onPress.bind(this)}>
-          <View style={styles.button}>
-            <Text>Request Ride</Text>
-          </View>
-        </TouchableOpacity>
+              {
+                this.state.updates.map((update, index) => (
+                  <Text style={styles.update}>{update}</Text>
+                ))
+              }
+            </View>
+          )
+        }
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  update: {
+    marginHorizontal: 20,
+    marginVertical: 5,
+    fontFamily: fonts.regular,
+    fontSize: 16
+  },
+  locationTitle: {
+    fontFamily: fonts.regular,
+    textAlign: 'center',
+    paddingLeft: 20,
+    marginVertical: 10,
+    fontSize: 20
+  },
+  latitude: {
+    fontFamily: fonts.regular,
+    margin: 5,
+    paddingLeft: 15,
+    fontSize: 18
+  },
+  longitude: {
+    fontFamily: fonts.regular,
+    margin: 5,
+    paddingLeft: 15,
+    fontSize: 18,
+    paddingBottom: 15,
+    borderBottomWidth: 10,
+    borderBottomColor: 'black'
+  },
   header: {
     height: 60,
     justifyContent: 'center',
