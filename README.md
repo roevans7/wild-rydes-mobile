@@ -1,4 +1,4 @@
-# Wild Rydes React Native (Expo)
+# Wild Rydes React Native
 
 Welcome to the Wild Rydes React Native project. In this project, we will take you through the steps necessary to build a complete react native application with analytics, authentication, email list sign-up and booking of a ride.
 
@@ -6,27 +6,38 @@ Welcome to the Wild Rydes React Native project. In this project, we will take yo
 
 To get started, we'll need to clone the repo and install the dependencies.
 
-1. Clone the repo:
+1. Clone the repo   
 
 ```bash
 git clone https://github.com/aws-samples/wild-rydes-mobile.git
 ```
 
-2. Install the dependencies with NPM or Yarn
+2. Change into the new directory   
 
 ```bash
 cd wild-rydes-mobile
+```
+
+3. Check out the __react-native__ branch   
+
+```bash
+git checkout react-native
+```
+
+4. Install the dependencies   
+
+```
 npm install
 // or
 yarn
 ```
 
-3. Run the project
+5. Run the project   
 
 ```bash
-npm run ios
+react-native run-ios
 // or
-npm run android
+react-native run-android
 ```
 
 ## Lesson 1: Authentication  
@@ -78,10 +89,10 @@ Amplify.configure(config)
 
 Now let's update both Apply.js & SignIn.js to interact with the Amazon Cognito configuration that we now have using the Auth component from `aws-amplify`.
 
-Update form in __Apply.js__ to use `signUp` & `confirmSignUp` methods:
+Update form in __src/auth/Apply.js__ to use `signUp` & `confirmSignUp` methods:
 
 ```js
-// Apply.js
+// src/auth/Apply.js
 // import Auth module
 import { Auth } from 'aws-amplify'
 
@@ -121,9 +132,10 @@ confirmSignUp = () => {
 }
 ```
 
-Update form in __SignIn.js__ to use `signIn` & `confirmSignIn` methods:
+Update form in __src/auth/SignIn.js__ to use `signIn` & `confirmSignIn` methods:
 
 ```js
+// src/auth/SignIn.js.js
 // import Auth module
 import { Auth } from 'aws-amplify'
 
@@ -162,6 +174,7 @@ Once the user is logged in, we want to be able to check AsyncStorage to see if t
 To do so, we can call `Auth.currentAuthenticatedUser`, and if this call returns successfully we can log them in automratically:
 
 ```js
+// src/auth/Home.js
 // import Auth from amplify in imports
 import { Auth } from 'aws-amplify'
 
@@ -195,21 +208,21 @@ Analytics.record('Button Click', { eventType: 'ride requested' }, { unicorn: 'Bu
 
 ### Recording an event
 
-Let's add a button that records the number of user's that click on the __GIDDY UP__ button to sign up for the app.
+Let's add an event that tracks when a user attempts to sign up but has an error.
 
-In `Home.js`, let's add a new method and attach the method to the button press event:
+In __src/auth/Apply.js__, let's add the new tracking functionality to the `signUp` method in the `.catch` statement of `Auth.signUp`:
 
 ```js
-// Home.js
+// src/auth/Apply.js
 
 // import Analytics module
 import { Analytics } from 'aws-amplify'
 
-// record event
-signUp = () => {
-  Analytics.record('Apply button clicked')
-  this.props.navigation.navigate('Apply')
-}
+// track error in the signUp method
+.catch(err => {
+  Analytics.record('Error signing up!', { message: error.message })
+  console.log('error signing up: ', err)
+})
 ```
 
 We'll record some more meaningful analytics once we add our ride request functionality.
@@ -250,8 +263,6 @@ Select **Create a new API**.  This will prompt you for some information:
 * Add another HTTP path name? **N**
 
 Once complete, copy `./server/requestUnicorn.js` to `./awsmobilejs/backend/cloud-api/requestUnicorn/app.js`.  This is the code that will be run in the serverless backend in response to the API request.
-
-Run `awsmobile push` to publish the backend changes to AWS.
 
 ### Updating the client code
 
