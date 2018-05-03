@@ -15,7 +15,7 @@ import Button from '../components/Button'
 import * as Images from '../assets/images'
 import { dimensions, fonts, colors } from '../theme'
 
-import { Auth } from 'aws-amplify'
+import { Auth, Anaytics } from 'aws-amplify'
 
 class Apply extends React.Component {
   state = {
@@ -49,7 +49,10 @@ class Apply extends React.Component {
       console.log('successful sign up: ', success)
       this.setState({ showConfirmation: true })
     })
-    .catch(err => console.log('error signing up: ', err))
+    .catch(err => {
+      Analytics.record('Error signing up!', { message: error.message })
+      console.log('error signing up: ', err)
+    })
   }
   
   confirmSignUp = () => {
@@ -137,6 +140,7 @@ class Apply extends React.Component {
                   autoCapitalize='none'
                   autoCorrect={false}
                   underlineColorAndroid='transparent'
+                  value={this.state.username}
                 />
                 <TextInput
                   placeholderTextColor='rgba(255, 255, 255, .6)'
